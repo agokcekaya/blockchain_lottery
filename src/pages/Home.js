@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Content } from "../components/content/Content";
 import { makeStyles } from "@material-ui/core/styles";
 import DisplacementSphere from "../components/background/DisplacementSphere";
@@ -18,6 +18,11 @@ const useStyles = makeStyles(() => ({
 
 export const Home = () => {
   const classes = useStyles();
+  const [reload, setReload] = useState(false);
+
+  const handlereload = (e) => {
+    setReload(e);
+  };
 
   return (
     <>
@@ -28,8 +33,8 @@ export const Home = () => {
       </div>
       <SideNavbar />
       <Wallet />
-      <Lottery />
-      <Prize />
+      <Lottery trigger={reload} />
+      <Prize handlereload={handlereload} />
     </>
   );
 };

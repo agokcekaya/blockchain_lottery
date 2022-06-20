@@ -75,28 +75,30 @@ export const Wallet = () => {
             setWinCount(res);
           });
 
-        var price;
+        var price = await lott.methods.getTicketPrice().call();
         debugger;
-        lott.methods
-          .getTicketPrice()
-          .call()
-          .then((res) => {
-            price = res;
-          });
 
         var web3 = new Web3(window.ethereum);
 
-        //setTicketPrice(web3.utils.fromWei(price, "ether"));
+        setTicketPrice(web3.utils.fromWei(price, "ether"));
 
         setUserAddress(account);
 
         var bal;
 
-        //bal = await web3.eth.getBalance(accounts[0]);
+        bal = await web3.eth.getBalance(accounts[0]);
 
-        //setBalance(web3.utils.fromWei(bal, "ether"));
+        bal = web3.utils.fromWei(bal, "ether");
 
-        setTicketAmount(balance / ticketPrice);
+        bal = Number(bal).toFixed(2);
+
+        setBalance(bal);
+
+        var amount = balance / ticketPrice;
+
+        amount = Number(amount).toFixed(2);
+
+        setTicketAmount(amount);
 
         return;
       }
@@ -149,7 +151,7 @@ export const Wallet = () => {
               </Col>
               <Col lg={4} xl={4} md={4}>
                 <Typography variant="h6" component="h2">
-                  {balance.toFixed(2)} Ether
+                  {balance} Ether
                 </Typography>
               </Col>
               <Col lg={8} xl={8} md={8}>
@@ -159,7 +161,7 @@ export const Wallet = () => {
               </Col>
               <Col lg={4} xl={4} md={4}>
                 <Typography variant="h6" component="h2">
-                  {ticketAmount.toFixed(2)} Tickets
+                  {ticketAmount} Tickets
                 </Typography>
               </Col>
             </Row>

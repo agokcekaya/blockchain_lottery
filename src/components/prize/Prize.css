@@ -5,6 +5,10 @@
   margin-right: 10rem;
 }
 
+.MuiPaper-elevation1 {
+  box-shadow: none !important;
+}
+
 ._form_wrapper {
   display: flex;
   border-radius: 16px;

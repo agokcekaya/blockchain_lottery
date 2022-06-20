@@ -3,9 +3,21 @@
   flex-direction: column;
   align-items: center;
   margin-right: 4rem;
-  margin-top: 12rem;
+  margin-top: 8rem;
   margin-bottom: 12rem;
   margin-left: 12rem;
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4em;
+}
+
+.buttondiv {
+  display: flex;
+  flex-direction: column;
 }
 
 ._img {
@@ -25,7 +37,6 @@
   align-items: center;
   display: flex;
   flex-direction: row;
-  margin-top: 9rem;
   margin-bottom: 12rem;
   margin-right: 4rem;
   border-radius: 16px;

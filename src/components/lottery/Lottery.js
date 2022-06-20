@@ -13,7 +13,7 @@ import "./Lottery.css";
 
 import ticket from "../../assets/Desktopticket.svg";
 
-export const Lottery = () => {
+export const Lottery = (trigger) => {
   const [balance, setBalance] = React.useState(0);
   const [ticketCount, setTicketCount] = React.useState(0);
   const [playerCount, setPlayerCount] = React.useState(0);
@@ -21,6 +21,7 @@ export const Lottery = () => {
   const [successOpen, setSuccessOpen] = React.useState(false);
   const [errorOpen, setErrorOpen] = React.useState(false);
   const [reload, setReload] = useState(false);
+  const [ticketPrice, setTicketPrice] = React.useState(0);
 
   useEffect(() => {
     const init = async () => {
@@ -34,9 +35,12 @@ export const Lottery = () => {
 
       var playerC = await lott.methods.getPlayerCount().call();
       setPlayerCount(playerC);
+
+      var price = await lott.methods.getTicketPrice().call();
+      setTicketPrice(web3.utils.fromWei(price, "ether"));
     };
     init();
-  }, [reload]);
+  }, [reload, trigger]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -55,7 +59,7 @@ export const Lottery = () => {
     try {
       await lott.methods.buyTicket().send({
         from: accounts[0],
-        value: web3.utils.toWei("0.002", "ether"),
+        value: web3.utils.toWei(ticketPrice, "ether"),
       });
       setSuccessOpen(true);
       setReload(!reload);
@@ -80,7 +84,7 @@ export const Lottery = () => {
               backgroundRepeat: "no-repeat",
             }}
           ></div>
-          <div>
+          <div className="buttondiv">
             <LoadingButton
               size="large"
               onClick={buyFunc}
@@ -91,6 +95,11 @@ export const Lottery = () => {
                 Buy Ticket
               </Typography>
             </LoadingButton>
+            <div className="price">
+              <Typography variant="h6" component="h6">
+                Ticket price is {ticketPrice} Ether
+              </Typography>
+            </div>
           </div>
         </div>
         <div className="__content_wrapper2">

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
-import { Container, Typography, Button } from "@material-ui/core";
+import React, { useEffect, useContext } from "react";
+import { Container, Typography, Button, Box } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from "@mui/material/styles";
@@ -14,10 +14,15 @@ import lott from "../../utils/constants.js";
 import Web3 from "web3";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Confetti from "react-confetti";
+import { ThemeContext } from "../theme/ThemeProvider";
+import Paper from "@material-ui/core/Paper";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 import "./Prize.css";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  backdropFilter: "blur(5px)",
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
@@ -63,13 +68,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Prize = () => {
+export const Prize = ({ handlereload }) => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [loadingButton, setLoadingButton] = React.useState(false);
   const [lotteryResult, setLotteryResult] = React.useState(-1);
+  const { theme } = useContext(ThemeContext);
+  const [color, setColor] = React.useState("");
+  const [successOpen, setSuccessOpen] = React.useState(false);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      setColor("#424242");
+    } else {
+      setColor("#fff");
+    }
+  }, [theme]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -77,7 +93,7 @@ export const Prize = () => {
   };
 
   const isWinner = async () => {
-    setLoading(true)
+    setLoading(true);
     var web3 = new Web3(window.ethereum);
     const accounts = await web3.eth.getAccounts();
     debugger;
@@ -109,7 +125,10 @@ export const Prize = () => {
         await lott.methods.claimPrize(accounts[0]).send({
           from: accounts[0],
         });
+        handlereload(true);
+        handlereload(false);
         setLoadingButton(false);
+        setSuccessOpen(true);
         handleClose();
       } catch (e) {
         console.error(e);
@@ -123,6 +142,10 @@ export const Prize = () => {
     setOpen(false);
   };
 
+  const handleSuccessClose = () => {
+    setSuccessOpen(false);
+  };
+
   function DialogFunc() {
     function DialogBody() {
       if (lotteryResult === -1) {
@@ -130,12 +153,18 @@ export const Prize = () => {
         return (
           <>
             <BootstrapDialogTitle id="customized-dialog-title">
-              Claim Prize
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h5" component="h5">
+                  Claim Prize
+                </Typography>
+              </Paper>
             </BootstrapDialogTitle>
             <div className="wrapper_text">
-              <Typography variant="h5" component="h5">
-                Please connect your wallet.
-              </Typography>
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h5" component="h5">
+                  Please connect your wallet.
+                </Typography>
+              </Paper>
             </div>
             <DialogActions>
               <Button autoFocus onClick={handleClose}>
@@ -149,12 +178,18 @@ export const Prize = () => {
         return (
           <>
             <BootstrapDialogTitle id="customized-dialog-title">
-              Claim Prize
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h5" component="h5" underline="none">
+                  Claim Prize
+                </Typography>
+              </Paper>
             </BootstrapDialogTitle>
             <div className="wrapper_text">
-              <Typography variant="h5" component="h5">
-                Winner is not yet selected.
-              </Typography>
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h4" component="h2">
+                  Winner is not yet selected.
+                </Typography>
+              </Paper>
             </div>
             <DialogActions>
               <Button autoFocus onClick={handleClose}>
@@ -168,12 +203,18 @@ export const Prize = () => {
         return (
           <>
             <BootstrapDialogTitle id="customized-dialog-title">
-              Claim Prize
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h5" component="h5" underline="none">
+                  Claim Prize
+                </Typography>
+              </Paper>
             </BootstrapDialogTitle>
             <div className="wrapper_text">
-              <Typography variant="h5" component="h5">
-                You lost. Better luck next time.
-              </Typography>
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h5" component="h5">
+                  You lost. Better luck next time.
+                </Typography>
+              </Paper>
             </div>
             <DialogActions>
               <Button autoFocus onClick={handleClose}>
@@ -187,13 +228,19 @@ export const Prize = () => {
         return (
           <>
             <BootstrapDialogTitle id="customized-dialog-title">
-              Claim Prize
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h5" component="h5" underline="none">
+                  Claim Prize
+                </Typography>
+              </Paper>
             </BootstrapDialogTitle>
             <div className="wrapper_text">
               <Confetti />
-              <Typography variant="h5" component="h5">
-                You won!!! Congratulations
-              </Typography>
+              <Paper className="MuiPaper-elevation1">
+                <Typography variant="h5" component="h5">
+                  You won!!! Congratulations
+                </Typography>
+              </Paper>
             </div>
             <DialogActions>
               <LoadingButton
@@ -215,6 +262,11 @@ export const Prize = () => {
     return loading ? (
       <BootstrapDialog
         //onClose={handleClose}
+        PaperProps={{
+          style: {
+            backgroundColor: color,
+          },
+        }}
         aria-labelledby="customized-dialog-title"
         fullWidth="true"
         open={open}
@@ -223,7 +275,11 @@ export const Prize = () => {
           id="customized-dialog-title"
           //onClose={handleClose}
         >
-          Checking Lottery Status...
+          <Paper className="MuiPaper-elevation1">
+            <Typography variant="h5" component="h5">
+              Checking Lottery Status...
+            </Typography>
+          </Paper>
         </BootstrapDialogTitle>
         <div className="wrapper">
           <Spinner animation="border" role="status" size="xl">
@@ -232,13 +288,18 @@ export const Prize = () => {
         </div>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
-            Save changes
+            Close
           </Button>
         </DialogActions>
       </BootstrapDialog>
     ) : (
       <BootstrapDialog
         //onClose={handleClose}
+        PaperProps={{
+          style: {
+            backgroundColor: color,
+          },
+        }}
         aria-labelledby="customized-dialog-title"
         fullWidth="true"
         open={open}
@@ -257,24 +318,40 @@ export const Prize = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "100vh",
+            height: "90vh",
           }}
         >
+          <Typography align="center" variant="h3" component="h2">
+            Check The Results!
+          </Typography>
           <div
             style={{
-              marginBottom: 30,
+              margin: 80,
             }}
           >
             <Typography variant="h5" component="h2">
-              Claim Prize
+              Click the button below to see if you have won or not.
             </Typography>
           </div>
           <Button variant="contained" size="large" onClick={handleClickOpen}>
-            Claim Prize
+            Check Now!
           </Button>
         </div>
       </Container>
       <DialogFunc></DialogFunc>
+      <Snackbar
+        open={successOpen}
+        autoHideDuration={6000}
+        onClose={handleSuccessClose}
+      >
+        <Alert
+          onClose={handleSuccessClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          You successfully claimed your reward!
+        </Alert>
+      </Snackbar>
     </section>
   );
 };
