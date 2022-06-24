@@ -3,8 +3,8 @@ import Web3 from "web3";
 var web3 = new Web3(window.ethereum);
 
 const address = "0xF00a7dBF492C3a9A572d86e6B1b6919ee6AE76c1";
-const scan_link =
-  "https://rinkeby.etherscan.io/address/0xF00a7dBF492C3a9A572d86e6B1b6919ee6AE76c1";
+/*const ether_scan_link =
+  "https://rinkeby.etherscan.io/address/0xF00a7dBF492C3a9A572d86e6B1b6919ee6AE76c1";*/
 const abi = [
   {
     inputs: [],
